@@ -9,9 +9,9 @@
     "start": "node dist/main/server.js",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
-    "migrate": "node -r dotenv/config -r ts-node/register ./node_modules/knex/bin/cli.js  migrate:latest --knexfile src/config/knex.ts",
-    "migrate:make": "node -r ts-node/register -r dotenv/config ./node_modules/knex/bin/cli.js migrate:make --knexfile src/config/knex.ts -x ts",
-    "migrate:rollback": "node -r dotenv/config -r ts-node/register ./node_modules/knex/bin/cli.js migrate:rollback --knexfile src/config/knex.ts",
+    "migrate": "node -r dotenv/config -r ts-node/register -r tsconfig-paths/register ./node_modules/knex/bin/cli.js migrate:latest --knexfile src/infrastructure/database/knex.ts",
+    "migrate:make": "node -r dotenv/config -r ts-node/register -r tsconfig-paths/register ./node_modules/knex/bin/cli.js migrate:make --knexfile src/infrastructure/database/knex.ts",
+    "migrate:rollback": "node -r dotenv/config -r ts-node/register -r tsconfig-paths/register ./node_modules/knex/bin/cli.js migrate:rollback --knexfile src/infrastructure/database/knex.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . --ext .ts"
   },
@@ -44,6 +44,7 @@
     "eslint-plugin-prettier": "^5.5.5",
     "prettier": "^3.8.3",
     "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0",
     "tsx": "^4.21.0",
     "typescript": "^6.0.2"
   }

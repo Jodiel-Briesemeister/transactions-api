@@ -1,8 +1,8 @@
 import knex, { Knex } from 'knex';
 import path from 'path';
-import { env } from 'shared/env';
+import { env } from '@shared/env';
 
-const basePath = path.resolve(__dirname, '../../')
+const basePath = path.resolve(__dirname, '../../../')
 
 const knexConfig: Knex.Config = {
   client: 'pg',
@@ -27,3 +27,5 @@ const knexConfig: Knex.Config = {
 export const createKnexConnection = (): Knex => {
   return knex(knexConfig);
 };
+
+export default knexConfig
