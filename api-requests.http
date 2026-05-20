@@ -1,11 +1,11 @@
 @baseUrl = http://localhost:3000
 @contentType = application/json
 
-### 1. Health Check
+### Health Check
 GET {{baseUrl}}/health HTTP/1.1
 
-### 2. Register
-POST {{baseUrl}}/register HTTP/1.1
+### Register
+POST {{baseUrl}}/auth/register HTTP/1.1
 Content-Type: {{contentType}}
 
 {
@@ -14,9 +14,9 @@ Content-Type: {{contentType}}
   "password": "AutoTest@123"
 }
 
-### 3. Login
+### Login
 # @name loginUser
-POST {{baseUrl}}/login HTTP/1.1
+POST {{baseUrl}}/auth/login HTTP/1.1
 Content-Type: {{contentType}}
 
 {
@@ -24,10 +24,89 @@ Content-Type: {{contentType}}
   "password": "AutoTest@123"
 }
 
-### 3. Logout
-POST {{baseUrl}}/logout HTTP/1.1
+### Logout
+POST {{baseUrl}}/auth/logout HTTP/1.1
+Authorization: Bearer {{loginUser.response.body.accessToken}}
 Content-Type: {{contentType}}
 
 {
   "refreshToken": "{{loginUser.response.body.refreshToken}}"
 }
+
+### REACTIVATE ACCOUNT
+POST {{baseUrl}}/auth/reactivate HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+  "email": "user@teste.com",
+  "password": "AutoTest@123"
+}
+
+### REFRESH
+POST {{baseUrl}}/auth/refresh HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+  "refreshToken": "{{loginUser.response.body.refreshToken}}"
+}
+
+### GET PROFILE
+GET {{baseUrl}}/user/profile HTTP/1.1
+Authorization: Bearer {{loginUser.response.body.accessToken}}
+
+### UPDATE PROFILE
+PATCH {{baseUrl}}/user/profile HTTP/1.1
+Authorization: Bearer {{loginUser.response.body.accessToken}}
+Content-Type: {{contentType}}
+
+{
+  "email": "user@teste1.com",
+  "phone": "47998765432"
+}
+
+### DELETE ACCOUNT
+DELETE {{baseUrl}}/user/account HTTP/1.1
+Authorization: Bearer {{loginUser.response.body.accessToken}}
+
+### GET BALANCE
+GET {{baseUrl}}/transactions/balance HTTP/1.1
+Authorization: Bearer {{loginUser.response.body.accessToken}}
+
+### DEPOSIT
+POST {{baseUrl}}/transactions/deposit HTTP/1.1
+Authorization: Bearer {{loginUser.response.body.accessToken}}
+Content-Type: {{contentType}}
+
+{
+  "amount": 200
+}
+
+### WITHDRAW
+POST {{baseUrl}}/transactions/withdraw HTTP/1.1
+Authorization: Bearer {{loginUser.response.body.accessToken}}
+Content-Type: {{contentType}}
+
+{
+  "amount": 50
+}
+
+### TRANSFER
+POST {{baseUrl}}/transactions/transfer HTTP/1.1
+Authorization: Bearer {{loginUser.response.body.accessToken}}
+Content-Type: {{contentType}}
+
+{
+  "amount": 50,
+  "recipientId": "c62a1bf8-d136-4c34-847c-5bb97daa4509"
+}
+
+### LIST ALL TRANSACTIONS
+GET {{baseUrl}}/transactions HTTP/1.1
+Authorization: Bearer {{loginUser.response.body.accessToken}}
+Content-Type: {{contentType}}
+
+{
+  "amount": 50,
+  "recipientId": "c62a1bf8-d136-4c34-847c-5bb97daa4509"
+}
+
