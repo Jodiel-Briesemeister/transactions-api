@@ -5,23 +5,28 @@ import { User } from '@domain/entities/User';
 import { IAuthService } from '@domain/interfaces/IAuthService';
 import { IRefreshTokenService } from '@domain/interfaces/IRefreshTokenService';
 import { AppError } from '@domain/errors/AppError';
+import { IUnitOfWork } from '@domain/interfaces/IUnitOfWork';
+import { IAccountRepository } from '@domain/interfaces/IAccountRepository';
 
 interface Request {
   name: string;
   email: string;
   password: string;
+  phone: string | null;
 }
 
 export class RegisterUseCase {
   constructor(
     private cachedUserRepository: IUserRepository,
+    private accountRepository: IAccountRepository,
     private passwordService: IPasswordService,
     private authService: IAuthService,
     private logger: ILogger,
     private refreshTokenService: IRefreshTokenService,
+    private unitOfWork: IUnitOfWork,
   ) {}
 
-  async execute({ name, email, password }: Request) {
+  async execute({ name, email, password, phone }: Request) {
     const existingUser = await this.cachedUserRepository.findByEmail(email);
 
     if (existingUser) {
@@ -35,9 +40,14 @@ export class RegisterUseCase {
       name,
       email,
       passwordHash,
+      phone,
     });
 
-    const userId = await this.cachedUserRepository.create(user);
+    const userId = await this.unitOfWork.transaction(async (trx) => {
+      const id = await this.cachedUserRepository.create(user, trx);
+      await this.accountRepository.create(id, trx);
+      return id;
+     });
     this.logger.info('User created', { userId });
 
     const accessToken = this.authService.generateAccessToken(userId);
