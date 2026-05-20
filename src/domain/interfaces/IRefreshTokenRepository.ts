@@ -12,12 +12,8 @@ export interface RefreshTokenData {
 
 export interface IRefreshTokenRepository {
   create(data: CreateRefreshTokenInput): Promise<void>;
-
   findByToken(token: string): Promise<RefreshTokenData | null>;
-
   deleteByToken(token: string): Promise<void>;
-
   deleteAllByUser(userId: string): Promise<void>;
-
   deleteExpired(): Promise<void>;
 }

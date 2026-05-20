@@ -48,7 +48,7 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
     await this.db('refresh_tokens').where({ token_hash: hash }).delete();
   }
 
-  async deleteAllByUser(userId: string): Promise<void> {
+  async deleteAllByUser(userId: string) {
     await this.db('refresh_tokens').where({ user_id: userId }).delete();
   }
 

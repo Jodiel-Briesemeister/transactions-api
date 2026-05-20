@@ -27,6 +27,10 @@ export class LoginUseCase {
       throw new AppError('Invalid credentials', 401);
     }
 
+    if (!user.isActive) {
+      throw new AppError('Account is inactive', 403, 'ACCOUNT_INACTIVE');
+    }
+
     const accessToken = this.authService.generateAccessToken(user.id);
     const refreshToken = await this.refreshTokenService.createForUser(user.id);
     this.logger.info('User logged in', { userId: user.id });
