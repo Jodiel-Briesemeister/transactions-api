@@ -31,6 +31,7 @@ import { DeactivateAccountUseCase } from '@application/usecases/user/DeactivateA
 import { ReactivateAccountUseCase } from '@application/usecases/auth/ReactivateAccountUseCase';
 import Redis from 'ioredis';
 import { TokenBlacklistService } from '@infrastructure/services/TokenBlacklistService';
+import { HealthService } from '@infrastructure/services/HealthService';
 
 export const container = createContainer<Cradle>({
   injectionMode: InjectionMode.CLASSIC,
@@ -44,6 +45,7 @@ container.register({
   redis: asFunction(() => new Redis({ host: env.redisHost, port: env.redisPort })).singleton(),
   cacheService: asClass(RedisCacheService).singleton(),
   tokenBlacklistService: asClass(TokenBlacklistService).singleton(),
+  healthService: asClass(HealthService).singleton(),
 
   // repositories
   userRepository: asClass(UserRepository).singleton(),

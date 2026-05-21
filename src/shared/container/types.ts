@@ -27,6 +27,7 @@ import { ReactivateAccountUseCase } from '@application/usecases/auth/ReactivateA
 import Redis from 'ioredis';
 import { Knex } from 'knex';
 import { ITokenBlacklistService } from '@domain/interfaces/ITokenBlacklistService';
+import { HealthService } from '@infrastructure/services/HealthService';
 
 export interface Cradle {
   // infra
@@ -36,6 +37,7 @@ export interface Cradle {
   logger: ILogger;
   cacheService: ICacheService;
   tokenBlacklistService: ITokenBlacklistService;
+  healthService: HealthService;
 
   // repositories
   userRepository: IUserRepository;
