@@ -4,5 +4,6 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
-  "eslint.probe": ["typescript"]
+  "eslint.probe": ["typescript"],
+  "files.eol": "\n"
 }
