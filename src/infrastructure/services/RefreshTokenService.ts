@@ -1,6 +1,6 @@
 import { IRefreshTokenRepository } from '@domain/interfaces/IRefreshTokenRepository';
 import { IRefreshTokenService } from '@domain/interfaces/IRefreshTokenService';
-import { randomUUID } from 'crypto';
+import { v7 as uuidv7 } from 'uuid';
 
 export class RefreshTokenService implements IRefreshTokenService {
   constructor(
@@ -9,7 +9,7 @@ export class RefreshTokenService implements IRefreshTokenService {
   ) {}
 
   async createForUser(userId: string): Promise<string> {
-    const token = randomUUID();
+    const token = uuidv7();
 
     await this.refreshTokenRepository.create({
       userId,

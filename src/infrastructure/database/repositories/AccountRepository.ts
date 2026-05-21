@@ -2,14 +2,14 @@ import { IAccountRepository } from '@domain/interfaces/IAccountRepository';
 import { Account } from '@domain/entities/Account';
 import { AccountMapper } from '@infrastructure/mappers/AccountMapper';
 import { Knex } from 'knex';
-import { randomUUID } from 'crypto';
+import { v7 as uuidv7 } from 'uuid';
 
 export class AccountRepository implements IAccountRepository {
   constructor(private db: Knex) {}
 
   async create(userId: string, trx: Knex.Transaction): Promise<void> {
     const account = Account.create({ userId, balance: 0 });
-    const id = randomUUID();
+    const id = uuidv7();
     await trx('accounts').insert(AccountMapper.toPersistence(account, id));
   }
 

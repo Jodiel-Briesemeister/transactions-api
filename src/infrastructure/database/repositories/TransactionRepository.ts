@@ -2,13 +2,13 @@ import { ITransactionRepository, ListTransactionsFilters } from '@domain/interfa
 import { Transaction } from '@domain/entities/Transaction';
 import { TransactionMapper } from '@infrastructure/mappers/TransactionMapper';
 import { Knex } from 'knex';
-import { randomUUID } from 'crypto';
+import { v7 as uuidv7 } from 'uuid';
 
 export class TransactionRepository implements ITransactionRepository {
   constructor(private db: Knex) {}
 
   async create(transaction: Transaction, trx: Knex.Transaction): Promise<string> {
-    const id = randomUUID();
+    const id = uuidv7();
     await trx('transactions').insert(TransactionMapper.toPersistence(transaction, id));
     return id;
   }

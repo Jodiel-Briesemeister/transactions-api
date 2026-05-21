@@ -2,13 +2,13 @@ import { Knex } from 'knex';
 import { IUserRepository, UpdateUserData } from '@domain/interfaces/IUserRepository';
 import { User } from '@domain/entities/User';
 import { UserMapper } from '@infrastructure/mappers/UserMapper';
-import { randomUUID } from 'crypto';
+import { v7 as uuidv7 } from 'uuid';
 
 export class UserRepository implements IUserRepository {
   constructor(private db: Knex) {}
 
   async create(user: User, trx?: Knex.Transaction): Promise<string> {
-    const id = randomUUID();
+    const id = uuidv7();
     const query = trx ? trx('users') : this.db('users');
     await query.insert(UserMapper.toPersistence(user, id));
     return id

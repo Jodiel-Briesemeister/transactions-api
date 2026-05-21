@@ -4,7 +4,8 @@ import {
   IRefreshTokenRepository,
   RefreshTokenData,
 } from '@domain/interfaces/IRefreshTokenRepository';
-import { randomUUID, createHash } from 'crypto';
+import { createHash } from 'crypto';
+import { v7 as uuidv7 } from 'uuid';
 
 export class RefreshTokenRepository implements IRefreshTokenRepository {
   constructor(private db: Knex) {}
@@ -19,7 +20,7 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
     expiresAt,
   }: CreateRefreshTokenInput): Promise<void> {
     await this.db('refresh_tokens').insert({
-      id: randomUUID(),
+      id: uuidv7(),
       user_id: userId,
       token_hash: this.hash(token),
       expires_at: expiresAt,
