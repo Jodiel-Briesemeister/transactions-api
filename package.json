@@ -13,6 +13,8 @@
     "migrate:make": "node -r dotenv/config -r ts-node/register -r tsconfig-paths/register ./node_modules/knex/bin/cli.js migrate:make --knexfile src/infrastructure/database/knex.ts",
     "migrate:rollback": "node -r dotenv/config -r ts-node/register -r tsconfig-paths/register ./node_modules/knex/bin/cli.js migrate:rollback --knexfile src/infrastructure/database/knex.ts",
     "test": "vitest run",
+    "test:unit": "vitest run tests/unit",
+    "test:integration": "vitest run tests/integration",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint . --ext .ts"
