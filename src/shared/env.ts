@@ -18,6 +18,10 @@ const envSchema = z.object({
   DB_NAME: z.string(),
   DB_SCHEMA: z.string().default('public'),
 
+  OTEL_SERVICE_NAME: z.string().default('transactions-api'),
+  OTEL_SERVICE_VERSION: z.string().default('1.0.0'),
+  OTEL_EXPORTER_OTLP_ENDPOINT: z.string().default('http://localhost:4318'),
+
   RATE_LIMIT_WINDOW_MS: z.coerce.number().default(15 * 60 * 1000),
   RATE_LIMIT_GLOBAL_TRIES: z.coerce.number().default(100),
   RATE_LIMIT_AUTH_TRIES: z.coerce.number().default(50),
@@ -42,6 +46,10 @@ export const env = {
   dbPassword: parsed.DB_PASSWORD,
   dbName: parsed.DB_NAME,
   dbSchema: parsed.DB_SCHEMA,
+
+  otelServiceName: parsed.OTEL_SERVICE_NAME,
+  otelServiceVersion: parsed.OTEL_SERVICE_VERSION,
+  otlpEndpoint: parsed.OTEL_EXPORTER_OTLP_ENDPOINT,
 
   rateLimitWindowMs: parsed.RATE_LIMIT_WINDOW_MS,
   rateLimitGlobalTries: parsed.RATE_LIMIT_GLOBAL_TRIES,

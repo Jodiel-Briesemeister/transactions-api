@@ -1,5 +1,4 @@
 import { ITransactionRepository, ListTransactionsFilters } from '@domain/interfaces/ITransactionRepository';
-import { ILogger } from '@domain/interfaces/ILogger';
 
 interface Request {
   userId: string;
@@ -7,15 +6,10 @@ interface Request {
 }
 
 export class ListTransactionsUseCase {
-  constructor(
-    private transactionRepository: ITransactionRepository,
-    private logger: ILogger,
-  ) {}
+  constructor(private transactionRepository: ITransactionRepository) {}
 
   async execute({ userId, filters }: Request) {
     const transactions = await this.transactionRepository.listByUser(userId, filters);
-
-    this.logger.info('Transactions listed', { userId });
 
     return transactions.map((t) => ({
       id: t.id,

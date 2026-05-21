@@ -2,20 +2,29 @@ import rateLimit from 'express-rate-limit';
 import { RedisReply, RedisStore } from 'rate-limit-redis';
 import { container } from '@shared/container';
 import { env } from '@shared/env';
+import { ILogger } from '@domain/interfaces/ILogger';
 import Redis from 'ioredis';
 
 const redis = container.resolve<Redis>('redis');
+const logger = container.resolve<ILogger>('logger');
 
 function createRateLimiter(limit: number) {
   return rateLimit({
     windowMs: env.rateLimitWindowMs,
     limit,
-    message: { message: 'Too many requests, please try again later' },
     standardHeaders: true,
     legacyHeaders: false,
     store: new RedisStore({
-    sendCommand: (command: string, ...args: string[]) => redis.call(command, ...args) as Promise<RedisReply>,
+      sendCommand: (command: string, ...args: string[]) => redis.call(command, ...args) as Promise<RedisReply>,
     }),
+    handler: (req, res, _next, options) => {
+      logger.warn('Rate limit exceeded', {
+        ip: req.ip,
+        method: req.method,
+        path: req.path,
+      });
+      res.status(options.statusCode).json({ message: 'Too many requests, please try again later' });
+    },
   });
 }
 
