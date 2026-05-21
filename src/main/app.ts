@@ -10,7 +10,13 @@ import userRoutes from '@presentation/routes/user.routes';
 export const app = express();
 const logger = container.resolve('logger');
 
+app.disable('x-powered-by');
 app.use(express.json());
+app.use((_req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  next();
+});
 
 app.use((_req, res, next) => {
   const span = trace.getActiveSpan();
