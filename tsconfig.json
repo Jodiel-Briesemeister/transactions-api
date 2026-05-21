@@ -36,5 +36,6 @@
     },
     "ignoreDeprecations": "6.0"
   },
-  "exclude": ["node_modules", "src/knexfile.ts"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }

@@ -29,7 +29,7 @@ import { TransactionController } from '@presentation/controllers/TransactionCont
 import { UserController } from '@presentation/controllers/UserController';
 import { DeactivateAccountUseCase } from '@application/usecases/user/DeactivateAccountUseCase';
 import { ReactivateAccountUseCase } from '@application/usecases/auth/ReactivateAccountUseCase';
-import Redis from 'ioredis';
+import { createRedisConnection } from '@infrastructure/redis/createRedisConnection';
 import { TokenBlacklistService } from '@infrastructure/services/TokenBlacklistService';
 import { HealthService } from '@infrastructure/services/HealthService';
 
@@ -42,7 +42,7 @@ container.register({
   db: asFunction(createKnexConnection).singleton(),
   unitOfWork: asClass(KnexUnitOfWork).singleton(),
   logger: asClass(WinstonLogger).singleton(),
-  redis: asFunction(() => new Redis({ host: env.redisHost, port: env.redisPort })).singleton(),
+  redis: asFunction(createRedisConnection).singleton(),
   cacheService: asClass(RedisCacheService).singleton(),
   tokenBlacklistService: asClass(TokenBlacklistService).singleton(),
   healthService: asClass(HealthService).singleton(),

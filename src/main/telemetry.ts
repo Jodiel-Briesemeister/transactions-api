@@ -35,6 +35,4 @@ const sdk = new NodeSDK({
 
 sdk.start();
 
-const shutdown = () => sdk.shutdown().finally(() => process.exit(0));
-process.on('SIGTERM', shutdown);
-process.on('SIGINT', shutdown);
+export const shutdownTelemetry = () => sdk.shutdown();
