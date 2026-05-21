@@ -32,7 +32,10 @@ export class TransferUseCase {
         this.userRepository.findById(recipientId, trx),
       ]);
 
-      if (!account) throw new AppError('Account not found', 404);
+      if (!account) {
+        this.logger.error('Account not found for existing user', { userId });
+        throw new AppError('Account not found', 404);
+      }
       if (!recipientAccount) throw new AppError('Recipient account not found', 404);
       if (account.balance < amount) throw new AppError('Insufficient balance', 422);
 

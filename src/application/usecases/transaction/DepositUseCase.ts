@@ -24,7 +24,10 @@ export class DepositUseCase {
 
     await this.unitOfWork.transaction(async (trx) => {
       const account = await this.accountRepository.findByUserId(userId, trx);
-      if (!account) throw new AppError('Account not found', 404);
+      if (!account) {
+        this.logger.error('Account not found for existing user', { userId });
+        throw new AppError('Account not found', 404);
+      }
 
       const transaction = Transaction.create({
         userId,
