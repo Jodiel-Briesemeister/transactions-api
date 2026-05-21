@@ -1,10 +1,13 @@
 {
   "compilerOptions": {
-    "rootDir": ".",
-    "noEmit": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
     "target": "es2022",
     "module": "commonjs",
-    "types": ["node"],
+    "types": [],
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -31,6 +34,6 @@
     },
     "ignoreDeprecations": "6.0"
   },
-  "include": ["src", "tests"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules"]
 }

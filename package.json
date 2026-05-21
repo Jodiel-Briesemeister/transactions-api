@@ -5,14 +5,16 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsx watch src/main/index.ts",
-    "build": "tsc && tsc-alias",
+    "build": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
     "start": "node dist/main/index.js",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
     "migrate": "node -r dotenv/config -r ts-node/register -r tsconfig-paths/register ./node_modules/knex/bin/cli.js migrate:latest --knexfile src/infrastructure/database/knex.ts",
     "migrate:make": "node -r dotenv/config -r ts-node/register -r tsconfig-paths/register ./node_modules/knex/bin/cli.js migrate:make --knexfile src/infrastructure/database/knex.ts",
     "migrate:rollback": "node -r dotenv/config -r ts-node/register -r tsconfig-paths/register ./node_modules/knex/bin/cli.js migrate:rollback --knexfile src/infrastructure/database/knex.ts",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "lint": "eslint . --ext .ts"
   },
   "keywords": [],
@@ -55,6 +57,7 @@
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^8.59.0",
     "@typescript-eslint/parser": "^8.59.0",
+    "@vitest/coverage-v8": "^4.1.7",
     "eslint": "^10.2.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
@@ -63,6 +66,7 @@
     "tsc-alias": "^1.8.17",
     "tsconfig-paths": "^4.2.0",
     "tsx": "^4.21.0",
-    "typescript": "^6.0.2"
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.7"
   }
 }
