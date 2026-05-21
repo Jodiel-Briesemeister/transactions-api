@@ -106,10 +106,15 @@ Content-Type: {{contentType}}
 ### LIST ALL TRANSACTIONS
 GET {{baseUrl}}/transactions HTTP/1.1
 Authorization: Bearer {{loginUser.response.body.accessToken}}
-Content-Type: {{contentType}}
 
-{
-  "amount": 50,
-  "recipientId": "c62a1bf8-d136-4c34-847c-5bb97daa4509"
-}
+### LIST TRANSACTIONS BY DATE
+GET {{baseUrl}}/transactions?from=2026-05-20&to=2026-05-22 HTTP/1.1
+Authorization: Bearer {{loginUser.response.body.accessToken}}
 
+### LIST TRANSACTIONS BY TYPE
+GET {{baseUrl}}/transactions?type=deposit HTTP/1.1
+Authorization: Bearer {{loginUser.response.body.accessToken}}
+
+### LIST TRANSACTIONS BY TYPE AND DATE
+GET {{baseUrl}}/transactions?type=transfer&from=2026-05-19 HTTP/1.1
+Authorization: Bearer {{loginUser.response.body.accessToken}}
