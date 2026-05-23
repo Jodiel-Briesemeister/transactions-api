@@ -63,7 +63,7 @@ Authorization: Bearer {{loginUser.response.body.accessToken}}
 Content-Type: {{contentType}}
 
 {
-  "email": "user@test1.com",
+  "email": "user@test3.com",
   "phone": "47998765432"
 }
 
@@ -100,7 +100,7 @@ Content-Type: {{contentType}}
 
 {
   "amount": 50,
-  "recipientId": "c62a1bf8-d136-4c34-847c-5bb97daa4509"
+  "recipientEmail": "user@test1.com""
 }
 
 ### LIST ALL TRANSACTIONS

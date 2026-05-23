@@ -10,7 +10,7 @@ export const withdrawSchema = z.object({
 });
 
 export const transferSchema = z.object({
-  recipientId: z.string().uuid(),
+  recipientEmail: z.string().email(),
   amount: z.number().int().positive(),
 });
 

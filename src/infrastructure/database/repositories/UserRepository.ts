@@ -14,8 +14,9 @@ export class UserRepository implements IUserRepository {
     return id;
   }
 
-  async findByEmail(email: string): Promise<User | null> {
-    const row = await this.db('users').where({ email }).first();
+  async findByEmail(email: string, trx?: Knex.Transaction): Promise<User | null> {
+    const query = trx ? trx('users') : this.db('users');
+    const row = await query.where({ email }).first();
     return row ? UserMapper.fromPersistence(row) : null;
   }
 

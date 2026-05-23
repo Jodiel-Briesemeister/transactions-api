@@ -36,7 +36,7 @@ export class TransactionController {
   async transfer(req: Request, res: Response) {
     await this.transferUseCase.execute({
       userId: req.userId,
-      recipientId: req.body.recipientId,
+      recipientEmail: req.body.recipientEmail,
       amount: req.body.amount,
     });
 

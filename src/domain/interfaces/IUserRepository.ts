@@ -8,7 +8,7 @@ export type UpdateUserData = {
 
 export interface IUserRepository {
   create(user: User, trx?: unknown): Promise<string>;
-  findByEmail(email: string): Promise<User | null>;
+  findByEmail(email: string, trx?: unknown): Promise<User | null>;
   findById(id: string, trx?: unknown): Promise<User | null>;
   update(id: string, data: UpdateUserData): Promise<User>;
   deactivate(id: string): Promise<void>;
