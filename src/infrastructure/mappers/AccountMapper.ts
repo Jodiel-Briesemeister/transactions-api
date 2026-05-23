@@ -1,5 +1,12 @@
 import { Account } from '@domain/entities/Account';
 
+interface AccountRow {
+  id: string;
+  user_id: string;
+  balance: number;
+  created_at: Date;
+}
+
 export class AccountMapper {
   static toPersistence(account: Account, id: string) {
     return {
@@ -10,7 +17,7 @@ export class AccountMapper {
     };
   }
 
-  static fromPersistence(row: any): Account {
+  static fromPersistence(row: AccountRow): Account {
     return Account.reconstitute({
       id: row.id,
       userId: row.user_id,

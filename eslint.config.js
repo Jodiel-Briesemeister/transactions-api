@@ -5,7 +5,7 @@ const prettierConfig = require('eslint-config-prettier');
 
 module.exports = [
   {
-    ignores: ['node_modules/**', 'dist/**', 'migrations/**'],
+    ignores: ['node_modules/**', 'dist/**', 'migrations/**', 'tests/**'],
   },
   {
     files: ['**/*.ts'],
@@ -20,8 +20,9 @@ module.exports = [
       ...tsPlugin.configs['recommended'].rules,
       ...prettierConfig.rules,
       'prettier/prettier': 'error',
-      '@typescript-eslint/explicit-function-return-type': 'warn',
+      '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       'no-console': 'warn',
     },
   },

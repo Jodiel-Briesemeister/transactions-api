@@ -42,7 +42,7 @@ export class User {
     });
   }
 
-  static reconstitute (props: UserProps): User {
+  static reconstitute(props: UserProps): User {
     return new User(props);
   }
 }

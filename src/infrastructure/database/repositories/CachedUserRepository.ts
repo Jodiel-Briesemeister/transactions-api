@@ -30,14 +30,18 @@ export class CachedUserRepository implements IUserRepository {
     const user = await this.userRepository.findById(id);
 
     if (user) {
-      await this.cacheService.set('user', id, JSON.stringify({
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        passwordHash: user.passwordHash,
-        phone: user.phone,
-        createdAt: user.createdAt,
-      }));
+      await this.cacheService.set(
+        'user',
+        id,
+        JSON.stringify({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          passwordHash: user.passwordHash,
+          phone: user.phone,
+          createdAt: user.createdAt,
+        }),
+      );
     }
 
     return user;

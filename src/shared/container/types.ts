@@ -45,7 +45,7 @@ export interface Cradle {
   refreshTokenRepository: IRefreshTokenRepository;
   accountRepository: IAccountRepository;
   transactionRepository: ITransactionRepository;
-  
+
   // services
   passwordService: IPasswordService;
   authService: IAuthService;

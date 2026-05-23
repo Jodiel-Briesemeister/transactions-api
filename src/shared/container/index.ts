@@ -56,8 +56,12 @@ container.register({
 
   // services
   passwordService: asClass(PasswordService).singleton(),
-  authService: asClass(AuthService).inject(() => ({ jwtSecret: env.jwtSecret })).singleton(),
-  refreshTokenService: asClass(RefreshTokenService).inject(() => ({ expiresInDays: env.refreshTokenExpiresInDays })).singleton(),
+  authService: asClass(AuthService)
+    .inject(() => ({ jwtSecret: env.jwtSecret }))
+    .singleton(),
+  refreshTokenService: asClass(RefreshTokenService)
+    .inject(() => ({ expiresInDays: env.refreshTokenExpiresInDays }))
+    .singleton(),
 
   // use cases - auth
   registerUseCase: asClass(RegisterUseCase).singleton(),

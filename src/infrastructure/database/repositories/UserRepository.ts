@@ -11,7 +11,7 @@ export class UserRepository implements IUserRepository {
     const id = uuidv7();
     const query = trx ? trx('users') : this.db('users');
     await query.insert(UserMapper.toPersistence(user, id));
-    return id
+    return id;
   }
 
   async findByEmail(email: string): Promise<User | null> {

@@ -1,4 +1,7 @@
-import { ITransactionRepository, ListTransactionsFilters } from '@domain/interfaces/ITransactionRepository';
+import {
+  ITransactionRepository,
+  ListTransactionsFilters,
+} from '@domain/interfaces/ITransactionRepository';
 
 interface Request {
   userId: string;

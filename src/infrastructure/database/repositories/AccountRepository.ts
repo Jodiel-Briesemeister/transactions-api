@@ -20,8 +20,6 @@ export class AccountRepository implements IAccountRepository {
   }
 
   async updateBalance(userId: string, amount: number, trx: Knex.Transaction): Promise<void> {
-    await trx('accounts')
-      .where({ user_id: userId })
-      .increment('balance', amount);
+    await trx('accounts').where({ user_id: userId }).increment('balance', amount);
   }
 }

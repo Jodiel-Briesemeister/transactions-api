@@ -10,7 +10,9 @@ export function createErrorHandler(logger: ILogger) {
     }
 
     if (err instanceof AppError) {
-      res.status(err.statusCode).json({ message: err.message, ...(err.code && { code: err.code }) });
+      res
+        .status(err.statusCode)
+        .json({ message: err.message, ...(err.code && { code: err.code }) });
       return;
     }
 

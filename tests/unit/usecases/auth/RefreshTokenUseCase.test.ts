@@ -14,7 +14,12 @@ const makeSut = () => {
   const refreshTokenService = makeRefreshTokenService();
   const logger = makeLogger();
 
-  const sut = new RefreshTokenUseCase(authService, refreshTokenRepository, refreshTokenService, logger);
+  const sut = new RefreshTokenUseCase(
+    authService,
+    refreshTokenRepository,
+    refreshTokenService,
+    logger,
+  );
 
   return { sut, authService, refreshTokenRepository, refreshTokenService, logger };
 };

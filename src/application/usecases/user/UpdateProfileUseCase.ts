@@ -1,4 +1,4 @@
-import { IUserRepository, UpdateUserData } from '@domain/interfaces/IUserRepository';
+import { IUserRepository } from '@domain/interfaces/IUserRepository';
 import { ILogger } from '@domain/interfaces/ILogger';
 import { AppError } from '@domain/errors/AppError';
 

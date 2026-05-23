@@ -14,11 +14,7 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
     return createHash('sha256').update(token).digest('hex');
   }
 
-  async create({
-    userId,
-    token,
-    expiresAt,
-  }: CreateRefreshTokenInput): Promise<void> {
+  async create({ userId, token, expiresAt }: CreateRefreshTokenInput): Promise<void> {
     await this.db('refresh_tokens').insert({
       id: uuidv7(),
       user_id: userId,
@@ -30,9 +26,7 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
   async findByToken(token: string): Promise<RefreshTokenData | null> {
     const hash = this.hash(token);
 
-    const row = await this.db('refresh_tokens')
-      .where({ token_hash: hash })
-      .first();
+    const row = await this.db('refresh_tokens').where({ token_hash: hash }).first();
 
     if (!row) return null;
 
@@ -54,8 +48,6 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
   }
 
   async deleteExpired(): Promise<void> {
-    await this.db('refresh_tokens')
-      .where('expires_at', '<', new Date())
-      .del();
+    await this.db('refresh_tokens').where('expires_at', '<', new Date()).del();
   }
 }

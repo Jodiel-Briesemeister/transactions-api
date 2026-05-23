@@ -1,6 +1,15 @@
 import { Transaction } from '@domain/entities/Transaction';
 import { TransactionType } from '@domain/enums/TransactionType';
 
+interface TransactionRow {
+  id: string;
+  user_id: string;
+  type: TransactionType;
+  amount: number;
+  recipient_id: string | null;
+  created_at: Date;
+}
+
 export class TransactionMapper {
   static toPersistence(transaction: Transaction, id: string) {
     return {
@@ -13,7 +22,7 @@ export class TransactionMapper {
     };
   }
 
-  static fromPersistence(row: any): Transaction {
+  static fromPersistence(row: TransactionRow): Transaction {
     return Transaction.reconstitute({
       id: row.id,
       userId: row.user_id,

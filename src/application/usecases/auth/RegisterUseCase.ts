@@ -47,7 +47,7 @@ export class RegisterUseCase {
       const id = await this.cachedUserRepository.create(user, trx);
       await this.accountRepository.create(id, trx);
       return id;
-     });
+    });
     this.logger.info('User created', { userId });
 
     const accessToken = this.authService.generateAccessToken(userId);

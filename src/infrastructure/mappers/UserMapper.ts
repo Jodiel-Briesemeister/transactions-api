@@ -1,6 +1,17 @@
 import { User } from '@domain/entities/User';
 import { UpdateUserData } from '@domain/interfaces/IUserRepository';
 
+interface UserRow {
+  id: string;
+  name: string;
+  email: string;
+  password_hash: string;
+  phone: string | null;
+  is_active: boolean;
+  created_at: Date;
+  updated_at: Date;
+}
+
 export class UserMapper {
   static toPersistence(user: User, id: string) {
     return {
@@ -15,7 +26,7 @@ export class UserMapper {
     };
   }
 
-  static fromPersistence(row: any): User {
+  static fromPersistence(row: UserRow): User {
     return User.reconstitute({
       id: row.id,
       name: row.name,

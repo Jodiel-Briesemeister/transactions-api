@@ -9,14 +9,8 @@ export class WinstonLogger implements ILogger {
   constructor() {
     this.logger = winston.createLogger({
       level: env.logLevel,
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.json(),
-      ),
-      transports: [
-        new winston.transports.Console(),
-        new OpenTelemetryTransportV3(),
-      ],
+      format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
+      transports: [new winston.transports.Console(), new OpenTelemetryTransportV3()],
     });
   }
 

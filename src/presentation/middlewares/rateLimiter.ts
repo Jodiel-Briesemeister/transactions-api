@@ -15,7 +15,8 @@ function createRateLimiter(limit: number) {
     standardHeaders: true,
     legacyHeaders: false,
     store: new RedisStore({
-      sendCommand: (command: string, ...args: string[]) => redis.call(command, ...args) as Promise<RedisReply>,
+      sendCommand: (command: string, ...args: string[]) =>
+        redis.call(command, ...args) as Promise<RedisReply>,
     }),
     handler: (req, res, _next, options) => {
       logger.warn('Rate limit exceeded', {

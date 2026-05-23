@@ -20,11 +20,7 @@ createTerminus(server, {
   signals: ['SIGTERM', 'SIGINT'],
   onSignal: async () => {
     logger.info('Shutdown signal received, closing connections');
-    await Promise.allSettled([
-      db.destroy(),
-      redis.quit(),
-      shutdownTelemetry(),
-    ]);
+    await Promise.allSettled([db.destroy(), redis.quit(), shutdownTelemetry()]);
   },
   onShutdown: async () => {
     logger.info('Server shutdown complete');

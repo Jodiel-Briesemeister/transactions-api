@@ -13,8 +13,18 @@ router.use(globalRateLimiter);
 
 const userController = container.resolve<UserController>('userController');
 
-router.get('/profile', asyncHandler((req, res) => userController.getProfile(req, res)));
-router.patch('/profile', validate(updateProfileSchema), asyncHandler((req, res) => userController.updateProfile(req, res)));
-router.delete('/account', asyncHandler((req, res) => userController.deactivateAccount(req, res)));
+router.get(
+  '/profile',
+  asyncHandler((req, res) => userController.getProfile(req, res)),
+);
+router.patch(
+  '/profile',
+  validate(updateProfileSchema),
+  asyncHandler((req, res) => userController.updateProfile(req, res)),
+);
+router.delete(
+  '/account',
+  asyncHandler((req, res) => userController.deactivateAccount(req, res)),
+);
 
 export default router;
