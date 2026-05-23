@@ -14,7 +14,7 @@ Content-Type: {{contentType}}
 {
   "name": "name test",
   "email": "user@test.com",
-  "password": "AutoTest@123"
+  "password": "145@xW78"
 }
 
 ### Login
@@ -24,7 +24,7 @@ Content-Type: {{contentType}}
 
 {
   "email": "user@test.com",
-  "password": "AutoTest@123"
+  "password": "145@xW78"
 }
 
 ### Logout
@@ -42,7 +42,7 @@ Content-Type: {{contentType}}
 
 {
   "email": "user@test.com",
-  "password": "AutoTest@123"
+  "password": "145@xW78"
 }
 
 ### REFRESH
@@ -63,7 +63,7 @@ Authorization: Bearer {{loginUser.response.body.accessToken}}
 Content-Type: {{contentType}}
 
 {
-  "email": "user@test3.com",
+  "email": "user@test2.com",
   "phone": "47998765432"
 }
 

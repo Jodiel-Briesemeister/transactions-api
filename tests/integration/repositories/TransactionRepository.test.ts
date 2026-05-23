@@ -109,14 +109,28 @@ describe('TransactionRepository', () => {
       expect(results[2]!.amount).toBe(100);
     });
 
-    it('should include recipient name on transfer', async () => {
+    it('should include sender and recipient names on transfer', async () => {
       await db.transaction((trx) =>
         repository.create(makeTransaction({ type: TransactionType.TRANSFER, recipientId }), trx),
       );
 
       const results = await repository.listByUser(userId, {});
 
+      expect(results[0]!.senderName).toBe('sender');
+      expect(results[0]!.senderId).toBe(userId);
       expect(results[0]!.recipientName).toBe('recipient');
+      expect(results[0]!.recipientId).toBe(recipientId);
+    });
+
+    it('should include incoming transfer in recipient history', async () => {
+      await db.transaction((trx) =>
+        repository.create(makeTransaction({ type: TransactionType.TRANSFER, recipientId }), trx),
+      );
+
+      const results = await repository.listByUser(recipientId, {});
+
+      expect(results).toHaveLength(1);
+      expect(results[0]!.senderName).toBe('sender');
       expect(results[0]!.recipientId).toBe(recipientId);
     });
 

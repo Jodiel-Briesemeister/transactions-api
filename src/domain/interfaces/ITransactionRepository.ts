@@ -11,6 +11,8 @@ export type TransactionListItem = {
   id: string;
   type: TransactionType;
   amount: number;
+  senderId: string;
+  senderName: string;
   recipientId: string | null;
   recipientName: string | null;
   createdAt: Date;

@@ -13,6 +13,8 @@ interface TransactionListRow {
   id: string;
   type: TransactionType;
   amount: number;
+  sender_id: string;
+  sender_name: string;
   recipient_id: string | null;
   recipient_name: string | null;
   created_at: Date;
@@ -32,16 +34,19 @@ export class TransactionRepository implements ITransactionRepository {
     filters: ListTransactionsFilters,
   ): Promise<TransactionListItem[]> {
     const query = this.db('transactions as t')
-      .leftJoin('users as u', 'u.id', 't.recipient_id')
+      .join('users as sender', 'sender.id', 't.user_id')
+      .leftJoin('users as recipient', 'recipient.id', 't.recipient_id')
       .select(
         't.id',
         't.type',
         't.amount',
+        't.user_id as sender_id',
+        'sender.name as sender_name',
         't.recipient_id',
         't.created_at',
-        'u.name as recipient_name',
+        'recipient.name as recipient_name',
       )
-      .where('t.user_id', userId);
+      .where((builder) => builder.where('t.user_id', userId).orWhere('t.recipient_id', userId));
 
     if (filters.type) query.where('t.type', filters.type);
     if (filters.from) query.where('t.created_at', '>=', filters.from);
@@ -53,6 +58,8 @@ export class TransactionRepository implements ITransactionRepository {
       id: row.id,
       type: row.type,
       amount: row.amount,
+      senderId: row.sender_id,
+      senderName: row.sender_name,
       recipientId: row.recipient_id ?? null,
       recipientName: row.recipient_name ?? null,
       createdAt: new Date(row.created_at),
