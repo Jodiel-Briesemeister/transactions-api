@@ -1,5 +1,7 @@
 # Transactions API
 
+![Tests](https://github.com/Jodiel-Briesemeister/transactions-api/actions/workflows/test.yml/badge.svg)
+
 A RESTful API for managing financial transactions, built with **Node.js**, **TypeScript**, and **Clean Architecture** principles.
 
 ## Tech Stack
@@ -45,7 +47,7 @@ Clean Architecture with dependency inversion — domain and application layers h
 
 ### Prerequisites
 
-- Node.js 20+
+- Node.js 22+
 - Docker and Docker Compose
 
 ### Setup

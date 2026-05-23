@@ -100,7 +100,7 @@ Content-Type: {{contentType}}
 
 {
   "amount": 50,
-  "recipientEmail": "user@test1.com""
+  "recipientEmail": "user2@test.com"
 }
 
 ### LIST ALL TRANSACTIONS
