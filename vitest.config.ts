@@ -17,6 +17,7 @@ export default defineConfig({
     globals: true,
     testTimeout: 15000,
     fileParallelism: false,
+
     coverage: {
       provider: 'v8',
       include: ['src/application/usecases/**'],
