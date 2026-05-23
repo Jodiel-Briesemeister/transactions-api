@@ -18,6 +18,7 @@ beforeAll(async () => {
 });
 
 afterEach(async () => {
+  await db('accounts').delete();
   await db('users').delete();
 });
 

@@ -45,7 +45,7 @@ const makeSut = () => {
 const input = {
   name: 'name test',
   email: 'user@test.com',
-  password: 'secret123',
+  password: 'Secure@9mB',
   phone: null,
 };
 

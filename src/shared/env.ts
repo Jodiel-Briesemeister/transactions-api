@@ -26,6 +26,8 @@ const envSchema = z.object({
   RATE_LIMIT_GLOBAL_TRIES: z.coerce.number().default(100),
   RATE_LIMIT_AUTH_TRIES: z.coerce.number().default(50),
   RATE_LIMIT_LOGIN_TRIES: z.coerce.number().default(10),
+
+  CORS_ORIGIN: z.string().default('http://localhost:3002'),
 });
 
 const parsed = envSchema.parse(process.env);
@@ -55,4 +57,6 @@ export const env = {
   rateLimitGlobalTries: parsed.RATE_LIMIT_GLOBAL_TRIES,
   rateLimitAuthTries: parsed.RATE_LIMIT_AUTH_TRIES,
   rateLimitLoginTries: parsed.RATE_LIMIT_LOGIN_TRIES,
+
+  corsOrigin: parsed.CORS_ORIGIN,
 };

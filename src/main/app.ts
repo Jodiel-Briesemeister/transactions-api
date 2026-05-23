@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import { trace } from '@opentelemetry/api';
 import authRoutes from '@presentation/routes/auth.routes';
 import healthRoutes from '@presentation/routes/health.routes';
@@ -6,11 +7,13 @@ import transactionRoutes from '@presentation/routes/transaction.routes';
 import { container } from '@shared/container';
 import { createErrorHandler } from '@presentation/middlewares/errorHandler';
 import userRoutes from '@presentation/routes/user.routes';
+import { env } from '@shared/env';
 
 export const app = express();
 const logger = container.resolve('logger');
 
 app.disable('x-powered-by');
+app.use(cors({ origin: env.corsOrigin, credentials: true }));
 app.use(express.json());
 app.use((_req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
