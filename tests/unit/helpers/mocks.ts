@@ -10,6 +10,7 @@ import { IPasswordService } from '@domain/interfaces/IPasswordService';
 import { IAuthService } from '@domain/interfaces/IAuthService';
 import { IRefreshTokenService } from '@domain/interfaces/IRefreshTokenService';
 import { IRefreshTokenRepository } from '@domain/interfaces/IRefreshTokenRepository';
+import { ITokenBlacklistService } from '@domain/interfaces/ITokenBlacklistService';
 
 export const makeLogger = (): ILogger => ({
   info: vi.fn(),
@@ -54,6 +55,11 @@ export const makeAuthService = (): IAuthService => ({
 
 export const makeRefreshTokenService = (): IRefreshTokenService => ({
   createForUser: vi.fn().mockResolvedValue('refresh-token'),
+});
+
+export const makeTokenBlacklistService = (): ITokenBlacklistService => ({
+  add: vi.fn(),
+  has: vi.fn(),
 });
 
 export const makeRefreshTokenRepository = (): IRefreshTokenRepository => ({
