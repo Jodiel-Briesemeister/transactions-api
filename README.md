@@ -2,7 +2,7 @@
 
 ![Tests](https://github.com/Jodiel-Briesemeister/transactions-api/actions/workflows/ci.yml/badge.svg)
 
-A RESTful API for managing financial transactions, built with **Node.js**, **TypeScript**, and **Clean Architecture** principles.
+A RESTful API for managing financial transactions, built with **Node.js**, **TypeScript**, and **Clean Architecture** principles. Pairs with [notifications-service](https://github.com/Jodiel-Briesemeister/notifications-service) for transactional email delivery via RabbitMQ.
 
 ## Tech Stack
 
