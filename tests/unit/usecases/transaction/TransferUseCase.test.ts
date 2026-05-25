@@ -9,6 +9,7 @@ import {
   makeTransactionRepository,
   makeAccount,
   makeUser,
+  makeMessagePublisher,
 } from '../../helpers/mocks';
 
 const makeSut = () => {
@@ -17,6 +18,7 @@ const makeSut = () => {
   const transactionRepository = makeTransactionRepository();
   const logger = makeLogger();
   const unitOfWork = makeUnitOfWork();
+  const messagePublisher = makeMessagePublisher();
 
   const sut = new TransferUseCase(
     userRepository,
@@ -24,6 +26,7 @@ const makeSut = () => {
     transactionRepository,
     logger,
     unitOfWork,
+    messagePublisher,
   );
 
   return { sut, userRepository, accountRepository, transactionRepository, logger, unitOfWork };
@@ -98,6 +101,7 @@ describe('TransferUseCase', () => {
       const { sut, accountRepository, userRepository } = makeSut();
       vi.mocked(accountRepository.findByUserId).mockResolvedValue(makeAccount(1000));
       vi.mocked(userRepository.findByEmail).mockResolvedValue(makeUser({ id: 'recipient-id' }));
+      vi.mocked(userRepository.findById).mockResolvedValue(makeUser());
 
       await sut.execute({ userId, recipientEmail, amount: 200 });
 
@@ -109,6 +113,7 @@ describe('TransferUseCase', () => {
       const { sut, accountRepository, userRepository, transactionRepository } = makeSut();
       vi.mocked(accountRepository.findByUserId).mockResolvedValue(makeAccount(1000));
       vi.mocked(userRepository.findByEmail).mockResolvedValue(makeUser({ id: 'recipient-id' }));
+      vi.mocked(userRepository.findById).mockResolvedValue(makeUser());
 
       await sut.execute({ userId, recipientEmail, amount: 200 });
 
@@ -119,6 +124,7 @@ describe('TransferUseCase', () => {
       const { sut, accountRepository, userRepository, logger } = makeSut();
       vi.mocked(accountRepository.findByUserId).mockResolvedValue(makeAccount(1000));
       vi.mocked(userRepository.findByEmail).mockResolvedValue(makeUser({ id: 'recipient-id' }));
+      vi.mocked(userRepository.findById).mockResolvedValue(makeUser());
 
       await sut.execute({ userId, recipientEmail, amount: 200 });
 

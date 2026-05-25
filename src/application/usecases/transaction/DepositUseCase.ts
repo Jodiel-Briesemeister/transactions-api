@@ -5,6 +5,10 @@ import { TransactionType } from '@domain/enums/TransactionType';
 import { AppError } from '@domain/errors/AppError';
 import { IUnitOfWork } from '@domain/interfaces/IUnitOfWork';
 import { IAccountRepository } from '@domain/interfaces/IAccountRepository';
+import { IMessagePublisher } from '@domain/interfaces/IMessagePublisher';
+import { IUserRepository } from '@domain/interfaces/IUserRepository';
+import { Queue } from '@domain/enums/Queue';
+import { NotificationTemplate } from '@domain/enums/NotificationTemplate';
 
 interface Request {
   userId: string;
@@ -17,6 +21,8 @@ export class DepositUseCase {
     private transactionRepository: ITransactionRepository,
     private logger: ILogger,
     private unitOfWork: IUnitOfWork,
+    private messagePublisher: IMessagePublisher,
+    private cachedUserRepository: IUserRepository,
   ) {}
 
   async execute({ userId, amount }: Request) {
@@ -41,5 +47,13 @@ export class DepositUseCase {
     });
 
     this.logger.info('Deposit completed', { userId, amount });
+
+    const user = await this.cachedUserRepository.findById(userId);
+    this.messagePublisher.publish(Queue.NotificationsEmail, {
+      templateId: NotificationTemplate.TransactionDeposit,
+      userName: user!.name,
+      userEmail: user!.email,
+      amount,
+    });
   }
 }

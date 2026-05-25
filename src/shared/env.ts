@@ -28,6 +28,7 @@ const envSchema = z.object({
   RATE_LIMIT_LOGIN_TRIES: z.coerce.number().default(10),
 
   CORS_ORIGIN: z.string().default('http://localhost:3002'),
+  RABBITMQ_URL: z.string().default('amqp://localhost:5672'),
 });
 
 const parsed = envSchema.parse(process.env);
@@ -59,4 +60,5 @@ export const env = {
   rateLimitLoginTries: parsed.RATE_LIMIT_LOGIN_TRIES,
 
   corsOrigin: parsed.CORS_ORIGIN,
+  rabbitmqUrl: parsed.RABBITMQ_URL,
 };

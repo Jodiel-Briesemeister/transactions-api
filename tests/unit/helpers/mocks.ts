@@ -11,6 +11,7 @@ import { IAuthService } from '@domain/interfaces/IAuthService';
 import { IRefreshTokenService } from '@domain/interfaces/IRefreshTokenService';
 import { IRefreshTokenRepository } from '@domain/interfaces/IRefreshTokenRepository';
 import { ITokenBlacklistService } from '@domain/interfaces/ITokenBlacklistService';
+import { IMessagePublisher } from '@domain/interfaces/IMessagePublisher';
 
 export const makeLogger = (): ILogger => ({
   info: vi.fn(),
@@ -55,6 +56,10 @@ export const makeAuthService = (): IAuthService => ({
 
 export const makeRefreshTokenService = (): IRefreshTokenService => ({
   createForUser: vi.fn().mockResolvedValue('refresh-token'),
+});
+
+export const makeMessagePublisher = (): IMessagePublisher => ({
+  publish: vi.fn().mockResolvedValue(undefined),
 });
 
 export const makeTokenBlacklistService = (): ITokenBlacklistService => ({

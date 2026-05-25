@@ -6,6 +6,7 @@ import {
   makeRefreshTokenRepository,
   makeLogger,
   makeUser,
+  makeMessagePublisher,
 } from '../../helpers/mocks';
 
 const makeSut = () => {
@@ -13,7 +14,13 @@ const makeSut = () => {
   const refreshTokenRepository = makeRefreshTokenRepository();
   const logger = makeLogger();
 
-  const sut = new DeactivateAccountUseCase(userRepository, refreshTokenRepository, logger);
+  const messagePublisher = makeMessagePublisher();
+  const sut = new DeactivateAccountUseCase(
+    userRepository,
+    refreshTokenRepository,
+    logger,
+    messagePublisher,
+  );
 
   return { sut, userRepository, refreshTokenRepository, logger };
 };

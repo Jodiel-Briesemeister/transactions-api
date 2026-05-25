@@ -7,6 +7,9 @@ import { IRefreshTokenService } from '@domain/interfaces/IRefreshTokenService';
 import { AppError } from '@domain/errors/AppError';
 import { IUnitOfWork } from '@domain/interfaces/IUnitOfWork';
 import { IAccountRepository } from '@domain/interfaces/IAccountRepository';
+import { IMessagePublisher } from '@domain/interfaces/IMessagePublisher';
+import { Queue } from '@domain/enums/Queue';
+import { NotificationTemplate } from '@domain/enums/NotificationTemplate';
 
 interface Request {
   name: string;
@@ -24,6 +27,7 @@ export class RegisterUseCase {
     private logger: ILogger,
     private refreshTokenService: IRefreshTokenService,
     private unitOfWork: IUnitOfWork,
+    private messagePublisher: IMessagePublisher,
   ) {}
 
   async execute({ name, email, password, phone }: Request) {
@@ -49,6 +53,12 @@ export class RegisterUseCase {
       return id;
     });
     this.logger.info('User created', { userId });
+
+    this.messagePublisher.publish(Queue.NotificationsEmail, {
+      templateId: NotificationTemplate.UserRegistered,
+      userName: user.name,
+      userEmail: user.email,
+    });
 
     const accessToken = this.authService.generateAccessToken(userId);
     const refreshToken = await this.refreshTokenService.createForUser(userId);

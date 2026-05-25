@@ -21,6 +21,16 @@ services:
     volumes:
       - redisdata:/data
 
+  rabbitmq:
+    image: rabbitmq:4-management-alpine
+    container_name: my_rabbitmq
+    restart: always
+    ports:
+      - '${RABBITMQ_PORT}:5672'
+      - '${RABBITMQ_MANAGEMENT_PORT}:15672'
+    volumes:
+      - rabbitmqdata:/var/lib/rabbitmq
+
   otel-collector:
     image: otel/opentelemetry-collector-contrib:latest
     container_name: otel_collector
@@ -86,6 +96,7 @@ services:
 volumes:
   pgdata:
   redisdata:
+  rabbitmqdata:
   tempodata:
   lokidata:
   grafanadata:

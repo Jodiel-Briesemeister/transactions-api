@@ -28,6 +28,7 @@ import Redis from 'ioredis';
 import { Knex } from 'knex';
 import { ITokenBlacklistService } from '@domain/interfaces/ITokenBlacklistService';
 import { HealthService } from '@infrastructure/services/HealthService';
+import { IMessagePublisher } from '@domain/interfaces/IMessagePublisher';
 
 export interface Cradle {
   // infra
@@ -38,6 +39,7 @@ export interface Cradle {
   cacheService: ICacheService;
   tokenBlacklistService: ITokenBlacklistService;
   healthService: HealthService;
+  messagePublisher: IMessagePublisher;
 
   // repositories
   userRepository: IUserRepository;

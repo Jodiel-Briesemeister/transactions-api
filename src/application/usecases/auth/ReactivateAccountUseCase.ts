@@ -4,6 +4,9 @@ import { AppError } from '@domain/errors/AppError';
 import { IAuthService } from '@domain/interfaces/IAuthService';
 import { IPasswordService } from '@domain/interfaces/IPasswordService';
 import { IRefreshTokenService } from '@domain/interfaces/IRefreshTokenService';
+import { IMessagePublisher } from '@domain/interfaces/IMessagePublisher';
+import { Queue } from '@domain/enums/Queue';
+import { NotificationTemplate } from '@domain/enums/NotificationTemplate';
 
 interface Request {
   email: string;
@@ -17,6 +20,7 @@ export class ReactivateAccountUseCase {
     private authService: IAuthService,
     private refreshTokenService: IRefreshTokenService,
     private logger: ILogger,
+    private messagePublisher: IMessagePublisher,
   ) {}
 
   async execute({ email, password }: Request) {
@@ -32,6 +36,11 @@ export class ReactivateAccountUseCase {
     await this.cachedUserRepository.reactivate(user.id);
 
     this.logger.info('User reactivated', { userId: user.id });
+    this.messagePublisher.publish(Queue.NotificationsEmail, {
+      templateId: NotificationTemplate.UserReactivated,
+      userName: user.name,
+      userEmail: user.email,
+    });
 
     const accessToken = this.authService.generateAccessToken(user.id);
     const refreshToken = await this.refreshTokenService.createForUser(user.id);

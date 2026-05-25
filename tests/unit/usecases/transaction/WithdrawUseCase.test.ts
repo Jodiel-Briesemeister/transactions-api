@@ -7,6 +7,9 @@ import {
   makeAccountRepository,
   makeTransactionRepository,
   makeAccount,
+  makeUser,
+  makeUserRepository,
+  makeMessagePublisher,
 } from '../../helpers/mocks';
 
 const makeSut = () => {
@@ -14,10 +17,19 @@ const makeSut = () => {
   const transactionRepository = makeTransactionRepository();
   const logger = makeLogger();
   const unitOfWork = makeUnitOfWork();
+  const messagePublisher = makeMessagePublisher();
+  const userRepository = makeUserRepository();
 
-  const sut = new WithdrawUseCase(accountRepository, transactionRepository, logger, unitOfWork);
+  const sut = new WithdrawUseCase(
+    accountRepository,
+    transactionRepository,
+    logger,
+    unitOfWork,
+    messagePublisher,
+    userRepository,
+  );
 
-  return { sut, accountRepository, transactionRepository, logger };
+  return { sut, accountRepository, transactionRepository, logger, userRepository };
 };
 
 describe('WithdrawUseCase', () => {
@@ -56,8 +68,9 @@ describe('WithdrawUseCase', () => {
   });
 
   it('should update balance and create transaction', async () => {
-    const { sut, accountRepository, transactionRepository } = makeSut();
+    const { sut, accountRepository, transactionRepository, userRepository } = makeSut();
     vi.mocked(accountRepository.findByUserId).mockResolvedValue(makeAccount(500));
+    vi.mocked(userRepository.findById).mockResolvedValue(makeUser());
 
     await sut.execute({ userId, amount: 100 });
 
@@ -66,8 +79,9 @@ describe('WithdrawUseCase', () => {
   });
 
   it('should log the withdraw', async () => {
-    const { sut, accountRepository, logger } = makeSut();
+    const { sut, accountRepository, logger, userRepository } = makeSut();
     vi.mocked(accountRepository.findByUserId).mockResolvedValue(makeAccount(500));
+    vi.mocked(userRepository.findById).mockResolvedValue(makeUser());
 
     await sut.execute({ userId, amount: 100 });
 

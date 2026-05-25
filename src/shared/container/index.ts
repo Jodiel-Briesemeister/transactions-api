@@ -32,6 +32,7 @@ import { ReactivateAccountUseCase } from '@application/usecases/auth/ReactivateA
 import { createRedisConnection } from '@infrastructure/redis/createRedisConnection';
 import { TokenBlacklistService } from '@infrastructure/services/TokenBlacklistService';
 import { HealthService } from '@infrastructure/services/HealthService';
+import { RabbitMQPublisher } from '@infrastructure/messaging/RabbitMQPublisher';
 
 export const container = createContainer<Cradle>({
   injectionMode: InjectionMode.CLASSIC,
@@ -46,6 +47,9 @@ container.register({
   cacheService: asClass(RedisCacheService).singleton(),
   tokenBlacklistService: asClass(TokenBlacklistService).singleton(),
   healthService: asClass(HealthService).singleton(),
+  messagePublisher: asClass(RabbitMQPublisher)
+    .inject(() => ({ url: env.rabbitmqUrl }))
+    .singleton(),
 
   // repositories
   userRepository: asClass(UserRepository).singleton(),

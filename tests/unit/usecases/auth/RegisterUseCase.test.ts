@@ -9,6 +9,7 @@ import {
   makePasswordService,
   makeAuthService,
   makeRefreshTokenService,
+  makeMessagePublisher,
   makeUser,
 } from '../../helpers/mocks';
 
@@ -20,6 +21,7 @@ const makeSut = () => {
   const logger = makeLogger();
   const refreshTokenService = makeRefreshTokenService();
   const unitOfWork = makeUnitOfWork();
+  const messagePublisher = makeMessagePublisher();
 
   const sut = new RegisterUseCase(
     userRepository,
@@ -29,6 +31,7 @@ const makeSut = () => {
     logger,
     refreshTokenService,
     unitOfWork,
+    messagePublisher,
   );
 
   return {
