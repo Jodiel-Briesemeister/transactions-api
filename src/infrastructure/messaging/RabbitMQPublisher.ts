@@ -23,7 +23,13 @@ export class RabbitMQPublisher implements IMessagePublisher {
   async publish(queue: string, payload: Record<string, unknown>): Promise<void> {
     try {
       const channel = await this.getChannel();
-      await channel.assertQueue(queue, { durable: true });
+      await channel.assertQueue(queue, {
+        durable: true,
+        arguments: {
+          'x-dead-letter-exchange': 'notifications_dlx',
+          'x-dead-letter-routing-key': queue,
+        },
+      });
 
       const headers: Record<string, string> = {};
       propagation.inject(context.active(), headers);
