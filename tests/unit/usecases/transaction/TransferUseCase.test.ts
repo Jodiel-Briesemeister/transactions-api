@@ -83,6 +83,18 @@ describe('TransferUseCase', () => {
       );
     });
 
+    it('should throw if recipient account is inactive', async () => {
+      const { sut, accountRepository, userRepository } = makeSut();
+      vi.mocked(accountRepository.findByUserId).mockResolvedValue(makeAccount(1000));
+      vi.mocked(userRepository.findByEmail).mockResolvedValue(
+        makeUser({ id: 'recipient-id', isActive: false }),
+      );
+
+      await expect(sut.execute({ userId, recipientEmail, amount: 100 })).rejects.toThrow(
+        new AppError('Recipient account is inactive', 422),
+      );
+    });
+
     it('should throw if balance is insufficient', async () => {
       const { sut, accountRepository, userRepository } = makeSut();
       vi.mocked(accountRepository.findByUserId).mockResolvedValue(makeAccount(50));

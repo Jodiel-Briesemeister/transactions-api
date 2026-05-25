@@ -42,6 +42,7 @@ export class TransferUseCase {
         throw new AppError('Account not found', 404);
       }
       if (!recipient) throw new AppError('Recipient not found', 404);
+      if (!recipient.isActive) throw new AppError('Recipient account is inactive', 422);
       if (recipient.id === userId) throw new AppError('Cannot transfer to yourself', 422);
       if (account.balance < amount) throw new AppError('Insufficient balance', 422);
 
