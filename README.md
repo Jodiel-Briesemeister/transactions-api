@@ -1,6 +1,6 @@
 # Transactions API
 
-![Tests](https://github.com/Jodiel-Briesemeister/transactions-api/actions/workflows/test.yml/badge.svg)
+![Tests](https://github.com/Jodiel-Briesemeister/transactions-api/actions/workflows/ci.yml/badge.svg)
 
 A RESTful API for managing financial transactions, built with **Node.js**, **TypeScript**, and **Clean Architecture** principles.
 
