@@ -35,7 +35,7 @@ Clean Architecture with dependency inversion — domain and application layers h
 - JWT authentication with refresh token rotation
 - Deposit, withdraw, and transfer between accounts
 - Concurrency-safe balances — debits read the account under `SELECT ... FOR UPDATE`, transfers lock both accounts in a fixed order, and a check constraint rejects negative balances
-- Transaction history with date filters
+- Transaction history with type and date filters
 - Redis-based rate limiting
 - Redis cache for user profile lookups
 - Background job to clean up expired refresh tokens
