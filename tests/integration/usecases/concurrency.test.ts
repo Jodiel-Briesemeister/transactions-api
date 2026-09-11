@@ -12,13 +12,8 @@ import { createTestDb } from '../helpers/database';
 import { makeLogger, makeMessagePublisher } from '../../unit/helpers/mocks';
 
 /**
- * Proves the balance is safe under concurrency. The unit tests only assert that the locking methods
- * are called, so they would still pass if the lock did nothing; these run real transactions against
- * real rows.
- *
- * Without `SELECT ... FOR UPDATE` both tests fail. In the first, some withdrawals pass the balance
- * check on a stale read and are then rejected by the non-negative balance constraint instead of being
- * refused with "Insufficient balance". The second dies with a Postgres deadlock (SQLSTATE 40P01).
+ * Exercises `SELECT ... FOR UPDATE` against real rows; the unit tests only check that the locking
+ * methods are called.
  */
 
 let db: Knex;
