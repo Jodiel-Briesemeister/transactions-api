@@ -5,7 +5,11 @@ import path from 'path';
 
 const migrationsDir = path.resolve(__dirname, '../../../migrations');
 
-export const createTestDb = (): Knex =>
+/**
+ * @param poolMax raise it for tests that open several transactions at once - the default of 5
+ *                would make concurrent tasks queue on the pool instead of racing on the rows.
+ */
+export const createTestDb = (poolMax = 5): Knex =>
   knex({
     client: 'pg',
     connection: {
@@ -18,6 +22,6 @@ export const createTestDb = (): Knex =>
     migrations: {
       directory: migrationsDir,
     },
-    pool: { min: 1, max: 5 },
+    pool: { min: 1, max: poolMax },
     searchPath: [env.dbSchema],
   });
