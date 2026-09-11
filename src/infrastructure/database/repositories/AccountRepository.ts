@@ -19,6 +19,11 @@ export class AccountRepository implements IAccountRepository {
     return row ? AccountMapper.fromPersistence(row) : null;
   }
 
+  async findByUserIdForUpdate(userId: string, trx: Knex.Transaction): Promise<Account | null> {
+    const row = await trx('accounts').where({ user_id: userId }).forUpdate().first();
+    return row ? AccountMapper.fromPersistence(row) : null;
+  }
+
   async updateBalance(userId: string, amount: number, trx: Knex.Transaction): Promise<void> {
     await trx('accounts').where({ user_id: userId }).increment('balance', amount);
   }

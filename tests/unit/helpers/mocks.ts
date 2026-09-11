@@ -26,6 +26,7 @@ export const makeUnitOfWork = (): IUnitOfWork => ({
 export const makeAccountRepository = (): IAccountRepository => ({
   create: vi.fn(),
   findByUserId: vi.fn(),
+  findByUserIdForUpdate: vi.fn(),
   updateBalance: vi.fn(),
 });
 

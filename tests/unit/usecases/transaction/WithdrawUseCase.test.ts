@@ -51,7 +51,7 @@ describe('WithdrawUseCase', () => {
 
   it('should throw if account not found', async () => {
     const { sut, accountRepository } = makeSut();
-    vi.mocked(accountRepository.findByUserId).mockResolvedValue(null);
+    vi.mocked(accountRepository.findByUserIdForUpdate).mockResolvedValue(null);
 
     await expect(sut.execute({ userId, amount: 100 })).rejects.toThrow(
       new AppError('Account not found', 404),
@@ -60,16 +60,27 @@ describe('WithdrawUseCase', () => {
 
   it('should throw if balance is insufficient', async () => {
     const { sut, accountRepository } = makeSut();
-    vi.mocked(accountRepository.findByUserId).mockResolvedValue(makeAccount(50));
+    vi.mocked(accountRepository.findByUserIdForUpdate).mockResolvedValue(makeAccount(50));
 
     await expect(sut.execute({ userId, amount: 100 })).rejects.toThrow(
       new AppError('Insufficient balance', 422),
     );
   });
 
+  it('should read the balance under a write lock', async () => {
+    const { sut, accountRepository, userRepository } = makeSut();
+    vi.mocked(accountRepository.findByUserIdForUpdate).mockResolvedValue(makeAccount(500));
+    vi.mocked(userRepository.findById).mockResolvedValue(makeUser());
+
+    await sut.execute({ userId, amount: 100 });
+
+    expect(accountRepository.findByUserIdForUpdate).toHaveBeenCalledWith(userId, {});
+    expect(accountRepository.findByUserId).not.toHaveBeenCalled();
+  });
+
   it('should update balance and create transaction', async () => {
     const { sut, accountRepository, transactionRepository, userRepository } = makeSut();
-    vi.mocked(accountRepository.findByUserId).mockResolvedValue(makeAccount(500));
+    vi.mocked(accountRepository.findByUserIdForUpdate).mockResolvedValue(makeAccount(500));
     vi.mocked(userRepository.findById).mockResolvedValue(makeUser());
 
     await sut.execute({ userId, amount: 100 });
@@ -80,7 +91,7 @@ describe('WithdrawUseCase', () => {
 
   it('should log the withdraw', async () => {
     const { sut, accountRepository, logger, userRepository } = makeSut();
-    vi.mocked(accountRepository.findByUserId).mockResolvedValue(makeAccount(500));
+    vi.mocked(accountRepository.findByUserIdForUpdate).mockResolvedValue(makeAccount(500));
     vi.mocked(userRepository.findById).mockResolvedValue(makeUser());
 
     await sut.execute({ userId, amount: 100 });

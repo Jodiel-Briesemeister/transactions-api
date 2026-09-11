@@ -54,6 +54,7 @@ describe('TransferUseCase', () => {
     it('should throw if user transfers to themselves', async () => {
       const { sut, accountRepository, userRepository } = makeSut();
       vi.mocked(accountRepository.findByUserId).mockResolvedValue(makeAccount(1000));
+      vi.mocked(accountRepository.findByUserIdForUpdate).mockResolvedValue(makeAccount(1000));
       vi.mocked(userRepository.findByEmail).mockResolvedValue(makeUser({ id: userId }));
 
       await expect(sut.execute({ userId, recipientEmail, amount: 100 })).rejects.toThrow(
@@ -66,6 +67,7 @@ describe('TransferUseCase', () => {
     it('should throw if sender account not found', async () => {
       const { sut, accountRepository, userRepository } = makeSut();
       vi.mocked(accountRepository.findByUserId).mockResolvedValue(null);
+      vi.mocked(accountRepository.findByUserIdForUpdate).mockResolvedValue(null);
       vi.mocked(userRepository.findByEmail).mockResolvedValue(makeUser({ id: 'recipient-id' }));
 
       await expect(sut.execute({ userId, recipientEmail, amount: 100 })).rejects.toThrow(
@@ -76,6 +78,7 @@ describe('TransferUseCase', () => {
     it('should throw if recipient not found', async () => {
       const { sut, accountRepository, userRepository } = makeSut();
       vi.mocked(accountRepository.findByUserId).mockResolvedValue(makeAccount(1000));
+      vi.mocked(accountRepository.findByUserIdForUpdate).mockResolvedValue(makeAccount(1000));
       vi.mocked(userRepository.findByEmail).mockResolvedValue(null);
 
       await expect(sut.execute({ userId, recipientEmail, amount: 100 })).rejects.toThrow(
@@ -86,6 +89,7 @@ describe('TransferUseCase', () => {
     it('should throw if recipient account is inactive', async () => {
       const { sut, accountRepository, userRepository } = makeSut();
       vi.mocked(accountRepository.findByUserId).mockResolvedValue(makeAccount(1000));
+      vi.mocked(accountRepository.findByUserIdForUpdate).mockResolvedValue(makeAccount(1000));
       vi.mocked(userRepository.findByEmail).mockResolvedValue(
         makeUser({ id: 'recipient-id', isActive: false }),
       );
@@ -98,11 +102,56 @@ describe('TransferUseCase', () => {
     it('should throw if balance is insufficient', async () => {
       const { sut, accountRepository, userRepository } = makeSut();
       vi.mocked(accountRepository.findByUserId).mockResolvedValue(makeAccount(50));
+      vi.mocked(accountRepository.findByUserIdForUpdate).mockResolvedValue(makeAccount(50));
       vi.mocked(userRepository.findByEmail).mockResolvedValue(makeUser({ id: 'recipient-id' }));
 
       await expect(sut.execute({ userId, recipientEmail, amount: 100 })).rejects.toThrow(
         new AppError('Insufficient balance', 422),
       );
+    });
+  });
+
+  describe('locking', () => {
+    it('should check the balance read under the lock, not the unlocked read', async () => {
+      const { sut, accountRepository, userRepository } = makeSut();
+      vi.mocked(accountRepository.findByUserId).mockResolvedValue(makeAccount(1000));
+      vi.mocked(accountRepository.findByUserIdForUpdate).mockResolvedValue(makeAccount(50));
+      vi.mocked(userRepository.findByEmail).mockResolvedValue(makeUser({ id: 'recipient-id' }));
+
+      await expect(sut.execute({ userId, recipientEmail, amount: 100 })).rejects.toThrow(
+        new AppError('Insufficient balance', 422),
+      );
+      expect(accountRepository.updateBalance).not.toHaveBeenCalled();
+    });
+
+    it('should lock the sender first when its id sorts before the recipient id', async () => {
+      const { sut, accountRepository, userRepository } = makeSut();
+      vi.mocked(accountRepository.findByUserId).mockResolvedValue(makeAccount(1000));
+      vi.mocked(accountRepository.findByUserIdForUpdate).mockResolvedValue(makeAccount(1000));
+      vi.mocked(userRepository.findByEmail).mockResolvedValue(makeUser({ id: 'z-recipient-id' }));
+      vi.mocked(userRepository.findById).mockResolvedValue(makeUser());
+
+      await sut.execute({ userId, recipientEmail, amount: 100 });
+
+      const lockedIds = vi
+        .mocked(accountRepository.findByUserIdForUpdate)
+        .mock.calls.map(([id]) => id);
+      expect(lockedIds).toEqual([userId, 'z-recipient-id']);
+    });
+
+    it('should lock the recipient first when its id sorts before the sender id', async () => {
+      const { sut, accountRepository, userRepository } = makeSut();
+      vi.mocked(accountRepository.findByUserId).mockResolvedValue(makeAccount(1000));
+      vi.mocked(accountRepository.findByUserIdForUpdate).mockResolvedValue(makeAccount(1000));
+      vi.mocked(userRepository.findByEmail).mockResolvedValue(makeUser({ id: 'recipient-id' }));
+      vi.mocked(userRepository.findById).mockResolvedValue(makeUser());
+
+      await sut.execute({ userId, recipientEmail, amount: 100 });
+
+      const lockedIds = vi
+        .mocked(accountRepository.findByUserIdForUpdate)
+        .mock.calls.map(([id]) => id);
+      expect(lockedIds).toEqual(['recipient-id', userId]);
     });
   });
 
@@ -112,6 +161,7 @@ describe('TransferUseCase', () => {
     it('should debit sender and credit recipient', async () => {
       const { sut, accountRepository, userRepository } = makeSut();
       vi.mocked(accountRepository.findByUserId).mockResolvedValue(makeAccount(1000));
+      vi.mocked(accountRepository.findByUserIdForUpdate).mockResolvedValue(makeAccount(1000));
       vi.mocked(userRepository.findByEmail).mockResolvedValue(makeUser({ id: 'recipient-id' }));
       vi.mocked(userRepository.findById).mockResolvedValue(makeUser());
 
@@ -124,6 +174,7 @@ describe('TransferUseCase', () => {
     it('should create the transaction record', async () => {
       const { sut, accountRepository, userRepository, transactionRepository } = makeSut();
       vi.mocked(accountRepository.findByUserId).mockResolvedValue(makeAccount(1000));
+      vi.mocked(accountRepository.findByUserIdForUpdate).mockResolvedValue(makeAccount(1000));
       vi.mocked(userRepository.findByEmail).mockResolvedValue(makeUser({ id: 'recipient-id' }));
       vi.mocked(userRepository.findById).mockResolvedValue(makeUser());
 
@@ -135,6 +186,7 @@ describe('TransferUseCase', () => {
     it('should log the transfer', async () => {
       const { sut, accountRepository, userRepository, logger } = makeSut();
       vi.mocked(accountRepository.findByUserId).mockResolvedValue(makeAccount(1000));
+      vi.mocked(accountRepository.findByUserIdForUpdate).mockResolvedValue(makeAccount(1000));
       vi.mocked(userRepository.findByEmail).mockResolvedValue(makeUser({ id: 'recipient-id' }));
       vi.mocked(userRepository.findById).mockResolvedValue(makeUser());
 

@@ -29,7 +29,9 @@ export class WithdrawUseCase {
     if (amount <= 0) throw new AppError('Amount must be greater than zero', 422);
 
     await this.unitOfWork.transaction(async (trx) => {
-      const account = await this.accountRepository.findByUserId(userId, trx);
+      // Locked read: the balance check and the debit must be atomic, or two concurrent
+      // withdrawals both pass the check and drive the account negative.
+      const account = await this.accountRepository.findByUserIdForUpdate(userId, trx);
       if (!account) {
         this.logger.error('Account not found for existing user', { userId });
         throw new AppError('Account not found', 404);

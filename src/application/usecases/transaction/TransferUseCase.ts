@@ -44,7 +44,9 @@ export class TransferUseCase {
       if (!recipient) throw new AppError('Recipient not found', 404);
       if (!recipient.isActive) throw new AppError('Recipient account is inactive', 422);
       if (recipient.id === userId) throw new AppError('Cannot transfer to yourself', 422);
-      if (account.balance < amount) throw new AppError('Insufficient balance', 422);
+
+      const senderAccount = await this.lockBothAccounts(userId, recipient.id, trx);
+      if (senderAccount.balance < amount) throw new AppError('Insufficient balance', 422);
 
       recipientName = recipient.name;
 
@@ -79,5 +81,33 @@ export class TransferUseCase {
       senderName: sender!.name,
       amount,
     });
+  }
+
+  /**
+   * Takes a write lock on both accounts before the balance is read, so two concurrent transfers
+   * cannot both see the same balance and overdraw it. The locks are always acquired in the same id
+   * order: the UPDATE statements below take row locks of their own, so A->B and B->A running at
+   * once would otherwise each hold the row the other needs and deadlock.
+   *
+   * @returns the sender account, read under the lock
+   */
+  private async lockBothAccounts(senderId: string, recipientId: string, trx: unknown) {
+    if (senderId < recipientId) {
+      const sender = await this.lock(senderId, trx);
+      await this.lock(recipientId, trx);
+      return sender;
+    }
+
+    await this.lock(recipientId, trx);
+    return this.lock(senderId, trx);
+  }
+
+  private async lock(userId: string, trx: unknown) {
+    const account = await this.accountRepository.findByUserIdForUpdate(userId, trx);
+    if (!account) {
+      this.logger.error('Account not found for existing user', { userId });
+      throw new AppError('Account not found', 404);
+    }
+    return account;
   }
 }
